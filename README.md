@@ -29,3 +29,6 @@ This script resets these specific bytes to `00`, tricking the game into thinking
 3. The script will confirm if it found and reset the death flags.
 4. **Manually copy** the patched `.save` file back to your game's save directory.
 5. Load the game. **Note:** If you die again, the game will likely re-lock the file. Simply run this script again to revive it.
+
+# Notes
+- Currently the `.py` file is under review and testing, and may be useless for some users. Please wait for an update and confirmation of it working appropriately. Until then you should use the save file backups and repalce manually.
