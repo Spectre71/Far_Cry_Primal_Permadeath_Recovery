@@ -3,10 +3,10 @@ set -euo pipefail
 # Auto-copy Far Cry Primal save files while the game runs.
 # Uses inotifywait if present, otherwise falls back to polling via stat.
 # USAGE WITH STEAM: bash -c 'path/to/FCP_save_copy.sh & exec "$@"' -- %command%
-# cp 1.save "path/to/steamapps/compatdata/371660/pfx/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/savegames/UID/2029" && cp 2.save "path/to/steamapps/compatdata/371660/pfx/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/savegames/UID/2029"
-SAVE_DIR="path/to/steamapps/compatdata/371660/pfx/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/savegames/UID/2029"
+# cp 1.save "/media/spectre71/860 QVO/SteamLibrary/steamapps/compatdata/371660/pfx/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/savegames/7f4b6223-e119-4fc9-a564-d5fc2cb0f20f/2029" && cp 2.save "/media/spectre71/860 QVO/SteamLibrary/steamapps/compatdata/371660/pfx/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/savegames/7f4b6223-e119-4fc9-a564-d5fc2cb0f20f/2029"
+SAVE_DIR="/media/spectre71/860 QVO/SteamLibrary/steamapps/compatdata/371660/pfx/drive_c/Program Files (x86)/Ubisoft/Ubisoft Game Launcher/savegames/7f4b6223-e119-4fc9-a564-d5fc2cb0f20f/2029"
 PATTERN="*.save"
-DEST_DIR="path/to/CustomFCPSaves"
+DEST_DIR="/home/spectre71/Custom_files/FCPSaves"
 POLL_INTERVAL=10
 # Set to 1 to append a timestamp to saved copies, or 0 to overwrite using original filename
 ADD_TIMESTAMP=0
