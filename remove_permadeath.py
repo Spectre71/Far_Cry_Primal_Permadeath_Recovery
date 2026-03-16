@@ -2,13 +2,13 @@ import sys
 import os
 
 def patch_save_file(file_path):
-    # OFFSET_FLAGS is the specific location we identified (638).
-    # In a Good/Alive file, this contains 01 01 01.
-    # When you die, the game zeroes it out (00 00 00)? 
-    # WAIT: Based on our first success, 01 01 01 was the BLOCKADE and we set it to 00 00 00.
+    # Observed from user-provided save timelines:
+    # - Dead-state candidates: 01 01 01 at offset 638
+    # - Older/alive candidates: 00 01 01 at offset 638
+    # So we only clear the first flag byte, preserving the remaining bytes.
     OFFSET_FLAGS = 638
-    BLOCKADE_PATTERN = b'\x01\x01\x01'
-    EMPTY_PATTERN = b'\x00\x00\x00'
+    DEAD_PATTERN = b'\x01\x01\x01'
+    ALIVE_PATTERN = b'\x00\x01\x01'
     
     # Validation Constants
     OFFSET_MARKER = 576
@@ -40,13 +40,13 @@ def patch_save_file(file_path):
             print(f"Verified valid save file: {file_path}")
             print(f"Current values at offset {OFFSET_FLAGS}: {current_bytes.hex()}")
 
-            if current_bytes == BLOCKADE_PATTERN:
+            if current_bytes == DEAD_PATTERN:
                 f.seek(OFFSET_FLAGS)
-                f.write(EMPTY_PATTERN)
-                print(f"Success! Removed blockade (01 01 01 -> 00 00 00) at offset {OFFSET_FLAGS}.")
+                f.write(ALIVE_PATTERN)
+                print(f"Success! Patched death flag (01 01 01 -> 00 01 01) at offset {OFFSET_FLAGS}.")
                 print("Your save file is revived. Try copying it back to the game folder.")
-            elif current_bytes == EMPTY_PATTERN:
-                print("The file is already set to 00 00 00 at this offset. No changes needed.")
+            elif current_bytes == ALIVE_PATTERN:
+                print("The file already looks alive (00 01 01 at this offset). No changes needed.")
             else:
                 print(f"Warning: Found unexpected bytes {current_bytes.hex()} at offset {OFFSET_FLAGS}.")
                 print("This specific file might have shifted data. Not patching to avoid corruption.")
