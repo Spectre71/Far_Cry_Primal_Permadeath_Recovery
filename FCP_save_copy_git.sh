@@ -20,11 +20,15 @@ copy_file() {
 	local base
 	base=$(basename -- "$src")
 	local dest="$DEST_DIR/$base"
-	local prev="$DEST_DIR/${base}.b1"
+	local prev1="$DEST_DIR/${base}.b1"
+	local prev2="$DEST_DIR/${base}.b2"
 
-	# Rotate: move current dest to .b1 (previous), overwriting prev if needed
+	# Rotate backups: move b1 -> b2, dest -> b1 (preserve two previous versions)
+	if [[ -e "$prev1" ]]; then
+		mv -f -- "$prev1" "$prev2" || true
+	fi
 	if [[ -e "$dest" ]]; then
-		mv -f -- "$dest" "$prev" || true
+		mv -f -- "$dest" "$prev1" || true
 	fi
 
 	# Copy new file as the current
