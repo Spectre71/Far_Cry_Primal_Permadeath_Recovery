@@ -10,13 +10,49 @@ DEST_DIR="path/to/CustomFCPSaves"
 POLL_INTERVAL=10
 # Set to 1 to append a timestamp to saved copies, or 0 to overwrite using original filename
 ADD_TIMESTAMP=0
+# Death-state guard (derived from save reverse-engineering)
+DEAD_FLAG_OFFSET=638
+DEAD_PATTERN_HEX="010101"
+# Regex used to detect that game/launcher is still running; adjust if your process names differ.
+GAME_PROCESS_REGEX="FCPrimal|FarCryPrimal|371660|Ubisoft|upc"
+WAIT_INTERVAL=3
 
 mkdir -p "$DEST_DIR"
 
 timestamp() { date +"%Y%m%d-%H%M%S"; }
 
+get_flag_hex() {
+	local src="${1:?}"
+	dd if="$src" bs=1 skip="$DEAD_FLAG_OFFSET" count=3 2>/dev/null | xxd -p
+}
+
+is_dead_save() {
+	local src="${1:?}"
+	local flag_hex
+	flag_hex=$(get_flag_hex "$src")
+	[[ "$flag_hex" == "$DEAD_PATTERN_HEX" ]]
+}
+
+game_is_running() {
+	pgrep -f "$GAME_PROCESS_REGEX" >/dev/null 2>&1
+}
+
+wait_for_game_exit() {
+	echo "Dead-state save detected; pausing backup until game process exits..."
+	while game_is_running; do
+		sleep "$WAIT_INTERVAL"
+	done
+	echo "Game process ended. Save backup monitoring resumed."
+}
+
 copy_file() {
 	local src="${1:?}"
+
+	if is_dead_save "$src"; then
+		wait_for_game_exit
+		return 2
+	fi
+
 	local base
 	base=$(basename -- "$src")
 	local dest="$DEST_DIR/$base"
