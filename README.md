@@ -9,9 +9,9 @@ Instead of removing the difficulty settings (Survivor Mode, Expert Difficulty, e
 When you die in Permadeath mode, the game writes specific flags to the save file to mark it as "Dead/Locked."
 - **Location:** Offset `638` (decimal) / `0x27E` (hex).
 - **Dead State:** `01 01 01` (Game locks the file).
-- **Alive State:** `00 00 00` (Game allows loading).
+- **Alive State:** `00 01 01` (Game allows loading).
 
-This script resets these specific bytes to `00`, tricking the game into thinking the character is still alive.
+This script resets the first byte to `00`, tricking the game into thinking the character is still alive.
 
 ## How to Use
 
@@ -28,7 +28,8 @@ This script resets these specific bytes to `00`, tricking the game into thinking
 
 3. The script will confirm if it found and reset the death flags.
 4. **Manually copy** the patched `.save` file back to your game's save directory.
-5. Load the game. **Note:** If you die again, the game will likely re-lock the file. Simply run this script again to revive it.
+5. Load the game. **Note:** If you die again, the game will re-lock the file. Simply run this script again to revive it.
 
 # Notes
-- Currently the `.py` file is under review and testing, and may be useless for some users. Please wait for an update and confirmation of it working appropriately. Until then you should use the save file backups and repalce manually.
+- ~~Currently the `.py` file is under review and testing, and may be useless for some users. Please wait for an update and confirmation of it working appropriately. Until then you should use the save file backups and replace manually.~~
+- scripts are confirmed working! Also updated to stop copying if dead state is found.
